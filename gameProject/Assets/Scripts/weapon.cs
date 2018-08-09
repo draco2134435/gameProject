@@ -6,16 +6,16 @@ public class weapon : MonoBehaviour {
 	public float fireRate = 0f;
 	public float dmg = 10f;
 	public LayerMask notToHit;
-	public bool facingRight = true;
-
 	float timeToFire = 0f;
-	Transform firePoint;
+    public PlayerMovement playerMovemet;
+    public bool facingRight = false;
+	public Transform firePoint;
+    public Transform bulletPrefab;
+
 	// Use this for initialization
 	void awake(){
-		firePoint = transform.Find ("firePoint");
-		if (firePoint == null) {
-			Debug.Log ("There is no firepoint");
-		}
+        
+
 	}
 
 	void Start () {
@@ -26,14 +26,32 @@ public class weapon : MonoBehaviour {
 	void Update(){
 	}
 	void FixedUpdate () {
-		
-		if (Input.GetButton ("Vertical")) {	
-			
-			transform.eulerAngles = new Vector3 (0f, 0f, 90f * Input.GetAxisRaw ("Vertical"));
-		} else {
-			transform.eulerAngles = new Vector3 (0f, 0f, 0f);
-		}
+        facingRight = playerMovemet.facingRight;
+        //aims gun
+        if (facingRight)
+        {
+            if (Input.GetButton("Vertical"))
+            {
 
+                transform.eulerAngles = new Vector3(0f, 0f, 90f * Input.GetAxisRaw("Vertical"));
+            }
+            else
+            {
+                transform.eulerAngles = new Vector3(0f, 0f, 0f);
+            }
+        }
+        else
+        {
+            if (Input.GetButton("Vertical"))
+            {
+
+                transform.eulerAngles = new Vector3(0f, 0f, -90f * Input.GetAxisRaw("Vertical"));
+            }
+            else
+            {
+                transform.eulerAngles = new Vector3(0f, 0f, 0f);
+            }
+        }
 		if (fireRate == 0) {
 			if (Input.GetButtonDown ("Fire3")) {
 				shoot ();
@@ -46,5 +64,19 @@ public class weapon : MonoBehaviour {
 
 	void shoot(){
 		Debug.Log ("Shooting is working");
+        effect();
 	}
+    void effect()
+    {
+        
+        if (bulletPrefab == null || firePoint == null)
+        {
+            Debug.Log("There is no bullet");
+        }
+        else
+        {
+            Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
+        }
+        
+    }
 }
